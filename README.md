@@ -2,13 +2,13 @@
 ### every file serving on next pages
 
 ### CRASH
-- [crash](https://bitruby-main.github.io/games_verify/crash)
+- [crash](https://bitruby-main.github.io/verifications/crash)
 
 ### LIMBO
-- [limbo](https://bitruby-main.github.io/games_verify/limbo)
+- [limbo](https://bitruby-main.github.io/verifications/limbo)
 
 ### HASHDICE
-- [hashdice](https://bitruby-main.github.io/games_verify/hashdice)
+- [hashdice](https://bitruby-main.github.io/verifications/hashdice)
 
 ### PLINKO
-- [plinko](https://bitruby-main.github.io/games_verify/plinko)
+- [plinko](https://bitruby-main.github.io/verifications/plinko)
