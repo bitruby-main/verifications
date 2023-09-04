@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Plinko - Game Verification code</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&display=swap" rel="stylesheet">
+  <script src="./libs/crypto.js"></script>
+
+  <style>
+  /* http://meyerweb.com/eric/tools/css/reset/ 
+    v2.0 | 20110126
+    License: none (public domain)
+  */
+  
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed, 
+  figure, figcaption, footer, header, hgroup, 
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+  }
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure, 
+  footer, header, hgroup, menu, nav, section {
+    display: block;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+    background-color: var(--bg-main);
+    padding: 60px 0;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    color: var(--body-light);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1240px;
+    padding: 0 20px;
+    margin: 0 auto;
+  }
+  :root {
+    --body-primary: rgb(225, 231, 228);
+    --body-light: rgb(184, 184, 184);
+    --body-default: rgb(138, 138, 138);
+    
+    /* // input */
+    --input-text: rgb(127, 127, 127);
+    --input-light: rgb(80, 80, 80);
+    --input-default: rgb(41, 41, 41);
+
+    /* // bg */
+    --bg-light: rgb(35, 35, 35);
+    --bg-secondary: rgb(27, 27, 27);
+    --bg-primary: rgb(24, 24, 24);
+    --bg-main: rgb(13, 13, 13);
+
+    /* // success */
+    --success-800: rgb(28, 109, 37);
+    --success-700: rgb(38, 145, 49);
+    --success-600: rgb(47, 181, 61);
+    --success-500: rgb(52, 199, 67);
+    --success-400: rgb(70, 204, 84);
+    --success-300: rgb(107, 214, 118);
+    --success-200: rgb(144, 224, 152);
+    --success-100: rgb(225, 247, 230);
+
+    /* // accent */
+    --accent-800: rgb(70, 20, 135);
+    --accent-700: rgb(88, 21, 174);
+    --accent-600: rgb(105, 22, 213);
+    --accent-500: rgb(114, 22, 232);
+    --accent-400: rgb(127, 43, 234);
+    --accent-300: rgb(152, 86, 238);
+    --accent-200: rgb(178, 128, 242);
+    --accent-100: rgb(241, 232, 255);
+    --accent-logo: rgb(142, 53, 255);
+    
+    /* // error */
+    --error: rgb(255, 127, 2);
+    --error-800: rgb(139, 27, 27);
+    --error-700: rgb(185, 36, 36);
+    --error-600: rgb(232, 45, 45);
+    --error-500: rgb(255, 50, 50);
+    --error-400: rgb(255, 69, 69);
+    --error-300: rgb(255, 106, 106);
+    --error-200: rgb(255, 143, 143);
+    --error-100: rgb(253, 232, 232);
+
+    /* // warning */
+    --warning-800: rgb(196, 183, 57);
+    --warning-700: rgb(220, 202, 35);
+    --warning-600: rgb(243, 221, 12);
+    --warning-500: rgb(255, 231, 1);
+    --warning-400: rgb(255, 233, 24);
+    --warning-300: rgb(255, 240, 93);
+    --warning-200: rgb(255, 244, 140);
+    --warning-100: rgb(253, 246, 178);
+
+    /* // base */
+    --white: rgb(255, 255, 255);
+    --black: rgb(0, 0, 0);
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .label {
+    font-size: 16px;
+    color: var(--body-light);
+    margin-bottom: 8px;
+  }
+
+  .input {
+    border-radius: 8px;
+    background-color: var(--input-default);
+    padding: 12px 16px;
+    font-size: 14px;
+    border: none;
+  }
+
+  .block {
+    width: 100%;
+    border-radius: 16px;
+    background-color: var(--bg-primary);
+    padding: 24px 16px;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background-color: var(--accent-500);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: transform .2s ease;
+  }
+
+  .button:active {
+    transform: scale(0.95)
+  }
+
+  .button:hover {
+    opacity: .8;
+  }
+
+  .submit-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .sizedBoxHeight {
+    height: 12px;
+    width: 100%;
+  }
+
+  .table {
+    width: 100%;
+  }
+
+  .table td:nth-child(1) {
+    width: 10%;
+  }
+
+  tr {
+    text-align: left;
+    /* border-bottom: 1px solid var(--body-default); */
+  }
+
+  thead {
+    background-color: var(--bg-light);
+  }
+
+  th {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+
+  td {
+    padding: 10px 16px;
+    font-size: 20px;
+  }
+
+  .main-block {
+    display: flex;
+  }
+
+  .form-block {
+    width: 70%;
+    margin-right: 14px;
+  }
+
+  .desc-block {
+    width: 30%;
+  }
+
+  .p-tag {
+    font-size: 14px;
+  }
+
+  .link {
+    width: fit-content;
+    display: block;
+    color: var(--accent-200);
+    margin-bottom: 20px;
+  }
+
+  .link:hover {
+    color: var(--accent-100);
+  }
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Plinko verification</h1>
+      </div>
+      <div class="container">
+        <div class="block">
+          <div class="main-block">
+            <div class="form-block">
+              <div class="col">
+                <label class="label">Client-seed</label>
+                <input v-model="clientSeed" class="input" type="text" placeholder="Client seed">
+              </div>
+              <div class="col">
+                <div class="row">
+                  <label class="label">Server-seed (you can check it in etherscan)</label>
+                </div>
+                <input v-model="serverSeed" class="input" type="text" placeholder="Server seed">
+              </div>
+              <div class="col">
+                <label class="label">Nonce</label>
+                <input v-model="nonce" class="input" type="text" placeholder="Nonce">
+              </div>
+              <div class="col">
+                <label class="label">Line</label>
+                <input v-model="lines" class="input" type="text" placeholder="Line">
+              </div>
+              <div class="col">
+                <label class="label">Risk</label>
+                <input v-model="risk" class="input" type="text" placeholder="Risk">
+              </div>
+            </div>
+            <div class="desc-block">
+              <h3 class="label">How does it work:</h3>
+              <p class="p-tag">
+                For Plinko we taking randomly created client-seed by user
+              </p>
+              <div class="sizedBoxHeight"></div>
+              <p class="p-tag">
+                Server seed is hidden at first, but its taking randomly from blockchain,
+                which you can check in link from left
+              </p>
+              <div class="sizedBoxHeight"></div>
+              <p class="p-tag">
+                All of this data you can check here,
+                links are providing for every bet from
+                <a
+                  href="https://bitruby.io/games/plinko"
+                  target="_blank"
+                >https://bitruby.io/games/plinko</a>
+              </p>
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <p class="submit-btn">
+              <button class="button is-primary" @click="triggerGameResult()">Verify game</button>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="sizedBoxHeight"></div>
+      <div class="sizedBoxHeight"></div>
+      <div class="container">
+        <h1 class="title">Hash results</h1>
+      </div>
+      <div class="container">
+        <div class="block">
+          <div class="col">
+            <label class="label">hmacSha512(ClientSeed:nonce, serverSeed)</label>
+            <input v-model="serverSeedHmac" class="input" type="text" placeholder="Server seed">
+          </div>
+        </div>
+      </div>
+      <div class="sizedBoxHeight"></div>
+      <div class="sizedBoxHeight"></div>
+      <div class="container">
+        <h1 class="title">Final result</h1>
+        <p class="p-tag">Based on bytes from hash, we building table and show how ball was going (left or right), from 1st line to 16th line (16 to cover all lines)</p>
+        <div class="sizedBoxHeight"></div>
+      </div>
+      <div class="container">
+        <div class="block">
+          <div class="row">
+            <label class="label">Result of game = {{ multiplierResult }}</label>
+          </div>
+          <div class="sizedBoxHeight"></div>
+          <h1 class="title">
+            <table>
+              <thead>
+                <th>step</th>
+                <th>num</th>
+                <th>direction</th>
+              </thead>
+              <tbody>
+                  <tr v-for="(item, i) in gameResults">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.num }}</td>
+                    <td>{{ item.direction }}</td>
+                  </tr>
+              </tbody>
+            </table>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script type="module">
+    const config = [{"name":"8-1","rows":8,"risk":1,"multipliers":[4.7,2.3,1.2,1,0.4,1,1.2,2.3,4.7]},{"name":"8-2","rows":8,"risk":2,"multipliers":[12,2.8,1.8,0.6,0.2,0.6,1.8,2.8,12]},{"name":"8-3","rows":8,"risk":3,"multipliers":[25,6.7,1.1,0.2,0.1,0.2,1.1,6.7,25]},{"name":"9-1","rows":9,"risk":1,"multipliers":[3,1.9,1.7,1.3,0.5,0.5,1.3,1.7,1.9,3]},{"name":"9-2","rows":9,"risk":2,"multipliers":[14,4.3,2.7,0.6,0.4,0.4,0.6,2.7,4.3,14]},{"name":"9-3","rows":9,"risk":3,"multipliers":[45,5.5,1.7,0.8,0.2,0.2,0.8,1.7,5.5,45]},{"name":"10-1","rows":10,"risk":1,"multipliers":[6.5,2.9,1.5,1.3,1,0.3,1,1.3,1.5,2.9,6.5]},{"name":"10-2","rows":10,"risk":2,"multipliers":[23,4.7,1.9,1.1,0.9,0.2,0.9,1.1,1.9,4.7,23]},{"name":"10-3","rows":10,"risk":3,"multipliers":[59,19,1.5,0.7,0.4,0.1,0.4,0.7,1.5,19,59]},{"name":"11-1","rows":11,"risk":1,"multipliers":[3.9,3.4,2.2,1.2,1,0.7,0.7,1,1.2,2.2,3.4,3.9]},{"name":"11-2","rows":11,"risk":2,"multipliers":[15,7.5,2.5,2.1,1,0.2,0.2,1,2.1,2.5,7.5,15]},{"name":"11-3","rows":11,"risk":3,"multipliers":[110,22,3.3,0.9,0.8,0.1,0.1,0.8,0.9,3.3,22,110]},{"name":"12-1","rows":12,"risk":1,"multipliers":[4.8,3,2.6,1.9,1.3,0.6,0.6,0.6,1.3,1.9,2.6,3,4.8]},{"name":"12-2","rows":12,"risk":2,"multipliers":[21,11,4.2,2.8,0.7,0.6,0.3,0.6,0.7,2.8,4.2,11,21]},{"name":"12-3","rows":12,"risk":3,"multipliers":[170,29,2.6,2,1,0.4,0.1,0.4,1,2,2.6,29,170]},{"name":"13-1","rows":13,"risk":1,"multipliers":[6,2.8,2.3,2.1,2,1,0.3,0.3,1,2,2.1,2.3,2.8,6]},{"name":"13-2","rows":13,"risk":2,"multipliers":[27,17,5.4,2.5,1.4,1,0.2,0.2,1,1.4,2.5,5.4,17,27]},{"name":"13-3","rows":13,"risk":3,"multipliers":[280,32,8.1,2,1.7,0.4,0.2,0.2,0.4,1.7,2,8.1,32,280]},{"name":"14-1","rows":14,"risk":1,"multipliers":[3.7,2.9,2.2,1.8,1.5,1.2,0.7,0.7,0.7,1.2,1.5,1.8,2.2,2.9,3.7]},{"name":"14-2","rows":14,"risk":2,"multipliers":[36,20,7.9,2.6,2.1,1.2,0.4,0.2,0.4,1.2,2.1,2.6,7.9,20,36]},{"name":"14-3","rows":14,"risk":3,"multipliers":[380,67,22,5.1,0.6,0.4,0.4,0.1,0.4,0.4,0.6,5.1,22,67,380]},{"name":"15-1","rows":15,"risk":1,"multipliers":[5,3.5,2.4,1.8,1.8,1.8,0.8,0.5,0.5,0.8,1.8,1.8,1.8,2.4,3.5,5]},{"name":"15-2","rows":15,"risk":2,"multipliers":[43,32,10,3.3,2.7,2,0.4,0.2,0.2,0.4,2,2.7,3.3,10,32,43]},{"name":"15-3","rows":15,"risk":3,"multipliers":[220,180,22,5.1,1.9,1.2,0.3,0.1,0.1,0.3,1.2,1.9,5.1,22,180,220]},{"name":"16-1","rows":16,"risk":1,"multipliers":[7.2,4.1,2.8,2.1,2,1.5,1.4,0.6,0.4,0.6,1.4,1.5,2,2.1,2.8,4.1,7.2]},{"name":"16-2","rows":16,"risk":2,"multipliers":[81,34,13,4.7,2.4,2.3,1.1,0.3,0.1,0.3,1.1,2.3,2.4,4.7,13,34,81]},{"name":"16-3","rows":16,"risk":3,"multipliers":[530,220,52,8.5,2.7,1.3,0.4,0.2,0.1,0.2,0.4,1.3,2.7,8.5,52,220,530]},{"name":"12-4","rows":12,"risk":4,"multipliers":[1000,48,1.2,0.3,0.2,0.1,0.1,0.1,0.2,0.3,1.2,48,1000]},{"name":"14-5","rows":14,"risk":5,"multipliers":[3333,230,0.9,0.2,0.2,0.2,0.1,0.1,0.1,0.2,0.2,0.2,0.9,230,3333]},{"name":"16-6","rows":16,"risk":6,"multipliers":[10000,210,21,4.7,1.9,0.8,0.3,0.2,0.1,0.2,0.3,0.8,1.9,4.7,21,210,10000]}]
+    const query = locationRead.queryString();
+    import { createApp, ref, watch } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+    
+    createApp({
+      data() {
+        return {
+          clientSeed: query.clientSeed ?? "",
+          nonce: query.nonce ?? "",
+          serverSeed: query.serverSeed ?? "",
+          serverSeedHmac: "",
+          gameResults: [],
+          lines: query.lines ?? 12,
+          risk: query.risk ?? 1,
+          multiplierResult: 0
+        }
+      },
+      mounted() {
+        if (this.clientSeed, this.nonce, this.serverSeed) this.triggerGameResult()
+      },
+      methods: {
+        calculateEventualResult(
+          linesNum,
+          directions,
+          multipliers
+        ) {
+          const ballsCounter =
+            (multipliers.length + 1) % 2 === 0
+              ? multipliers.length + 1
+              : multipliers.length;
+
+          const evenOrNot = multipliers.length % 2 === 0 ? 0.5 : 1;
+
+          let currentIndex = ballsCounter / 2 - evenOrNot;
+
+          for (let i = 0; i < linesNum; i++) {
+            const movement = directions[i];
+
+            if (movement === "+") {
+              currentIndex += 0.5; // Move to the right.
+            } else if (movement === "-") {
+              currentIndex -= 0.5; // Move to the left.
+            }
+          }
+
+          const labelResult = multipliers[currentIndex];
+          return labelResult;
+        },
+        triggerGameResult() {
+          const directionsWithBytes = this.gameResultCount().map((_) => ({
+            direction: _ > 0.5 ? "right" : "left",
+            directionWithSymbol: _ > 0.5 ? "+" : "-",
+            num: _
+          }));
+          const gameMultipliersArr = config.find(
+            (_) => _.name === `${this.lines}-${this.risk}`
+          );
+          const finalResult = this.calculateEventualResult(
+            gameMultipliersArr.rows,
+            directionsWithBytes.map((_) => _.directionWithSymbol),
+            gameMultipliersArr.multipliers
+          );
+          this.multiplierResult = finalResult
+          this.gameResults = directionsWithBytes
+        },
+        gameResultCount () {
+          const hash = CryptoJS.HmacSHA512(this.clientSeed + ':' + this.nonce, this.serverSeed)
+          const stringHash = String(hash)
+          this.serverSeedHmac = hash
+          
+          const res = [];
+          const hexArr = stringHash.match(/.{2}/g);
+          for (let i = 0, l = hexArr.length; i < l; i += 4) {
+            const num =
+              parseInt(hexArr[i], 16) / Math.pow(256, 1) +
+              parseInt(hexArr[i + 1], 16) / Math.pow(256, 2) +
+              parseInt(hexArr[i + 2], 16) / Math.pow(256, 3) +
+              parseInt(hexArr[i + 3], 16) / Math.pow(256, 4)
+            res.push(num)
+          }
+          return res
+        },
+      },
+    }).mount('#app')
+  </script>
+  <script>
+    window.locationRead = (() => {
+      function queryString() {
+        return window.location.search.replace('?', '')
+          .split('&')
+          .reduce(function (res, item) {
+            let kv = item.split('=');
+            res[kv[0]] = kv[1];
+            return res;
+          }, {})
+      }
+      
+      function sha256 (value) {
+        return CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(value));
+      }
+      return {
+        queryString,
+        sha256,
+      }
+    })();
+  </script>
+</body>
+
+</html>

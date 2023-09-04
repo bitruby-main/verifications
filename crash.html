@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crash - Game Verification code</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;800&display=swap" rel="stylesheet">
+  <script src="./libs/crypto.js"></script>
+
+  <style>
+  /* http://meyerweb.com/eric/tools/css/reset/ 
+    v2.0 | 20110126
+    License: none (public domain)
+  */
+  
+  html, body, div, span, applet, object, iframe,
+  h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+  a, abbr, acronym, address, big, cite, code,
+  del, dfn, em, img, ins, kbd, q, s, samp,
+  small, strike, strong, sub, sup, tt, var,
+  b, u, i, center,
+  dl, dt, dd, ol, ul, li,
+  fieldset, form, label, legend,
+  table, caption, tbody, tfoot, thead, tr, th, td,
+  article, aside, canvas, details, embed, 
+  figure, figcaption, footer, header, hgroup, 
+  menu, nav, output, ruby, section, summary,
+  time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+  }
+  /* HTML5 display-role reset for older browsers */
+  article, aside, details, figcaption, figure, 
+  footer, header, hgroup, menu, nav, section {
+    display: block;
+  }
+  body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1;
+    background-color: var(--bg-main);
+    padding: 60px 0;
+  }
+  ol, ul {
+    list-style: none;
+  }
+  blockquote, q {
+    quotes: none;
+  }
+  blockquote:before, blockquote:after,
+  q:before, q:after {
+    content: '';
+    content: none;
+  }
+  table {
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  * {
+    box-sizing: border-box;
+    color: var(--body-light);
+  }
+
+  .container {
+    width: 100%;
+    max-width: 1240px;
+    padding: 0 20px;
+    margin: 0 auto;
+  }
+  :root {
+    --body-primary: rgb(225, 231, 228);
+    --body-light: rgb(184, 184, 184);
+    --body-default: rgb(138, 138, 138);
+    
+    /* // input */
+    --input-text: rgb(127, 127, 127);
+    --input-light: rgb(80, 80, 80);
+    --input-default: rgb(41, 41, 41);
+
+    /* // bg */
+    --bg-light: rgb(35, 35, 35);
+    --bg-secondary: rgb(27, 27, 27);
+    --bg-primary: rgb(24, 24, 24);
+    --bg-main: rgb(13, 13, 13);
+
+    /* // success */
+    --success-800: rgb(28, 109, 37);
+    --success-700: rgb(38, 145, 49);
+    --success-600: rgb(47, 181, 61);
+    --success-500: rgb(52, 199, 67);
+    --success-400: rgb(70, 204, 84);
+    --success-300: rgb(107, 214, 118);
+    --success-200: rgb(144, 224, 152);
+    --success-100: rgb(225, 247, 230);
+
+    /* // accent */
+    --accent-800: rgb(70, 20, 135);
+    --accent-700: rgb(88, 21, 174);
+    --accent-600: rgb(105, 22, 213);
+    --accent-500: rgb(114, 22, 232);
+    --accent-400: rgb(127, 43, 234);
+    --accent-300: rgb(152, 86, 238);
+    --accent-200: rgb(178, 128, 242);
+    --accent-100: rgb(241, 232, 255);
+    --accent-logo: rgb(142, 53, 255);
+    
+    /* // error */
+    --error: rgb(255, 127, 2);
+    --error-800: rgb(139, 27, 27);
+    --error-700: rgb(185, 36, 36);
+    --error-600: rgb(232, 45, 45);
+    --error-500: rgb(255, 50, 50);
+    --error-400: rgb(255, 69, 69);
+    --error-300: rgb(255, 106, 106);
+    --error-200: rgb(255, 143, 143);
+    --error-100: rgb(253, 232, 232);
+
+    /* // warning */
+    --warning-800: rgb(196, 183, 57);
+    --warning-700: rgb(220, 202, 35);
+    --warning-600: rgb(243, 221, 12);
+    --warning-500: rgb(255, 231, 1);
+    --warning-400: rgb(255, 233, 24);
+    --warning-300: rgb(255, 240, 93);
+    --warning-200: rgb(255, 244, 140);
+    --warning-100: rgb(253, 246, 178);
+
+    /* // base */
+    --white: rgb(255, 255, 255);
+    --black: rgb(0, 0, 0);
+  }
+
+  .title {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .label {
+    font-size: 16px;
+    color: var(--body-light);
+    margin-bottom: 8px;
+  }
+
+  .input {
+    border-radius: 8px;
+    background-color: var(--input-default);
+    padding: 12px 16px;
+    font-size: 14px;
+    border: none;
+  }
+
+  .block {
+    width: 100%;
+    border-radius: 16px;
+    background-color: var(--bg-primary);
+    padding: 24px 16px;
+  }
+
+  .col {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+  }
+
+  .row {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .button {
+    padding: 12px 20px;
+    border-radius: 8px;
+    background-color: var(--accent-500);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    transition: transform .2s ease;
+  }
+
+  .button:active {
+    transform: scale(0.95)
+  }
+
+  .button:hover {
+    opacity: .8;
+  }
+
+  .submit-btn {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .sizedBoxHeight {
+    height: 12px;
+    width: 100%;
+  }
+
+  .table {
+    width: 100%;
+  }
+
+  tr {
+    text-align: left;
+    /* border-bottom: 1px solid var(--body-default); */
+  }
+
+  thead {
+    background-color: var(--bg-light);
+  }
+
+  th {
+    padding: 20px 16px;
+  }
+
+  td {
+    padding: 20px 16px;
+    width: 50%;
+  }
+
+  .main-block {
+    display: flex;
+  }
+
+  .form-block {
+    width: 70%;
+    margin-right: 14px;
+  }
+
+  .desc-block {
+    width: 30%;
+  }
+
+  .p-tag {
+    font-size: 14px;
+  }
+
+  .link {
+    width: fit-content;
+    display: block;
+    color: var(--accent-200);
+    margin-bottom: 20px;
+  }
+
+  .link:hover {
+    color: var(--accent-100);
+  }
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <section class="section">
+      <div class="container">
+        <h1 class="title">Crash - Game Verification</h1>
+      </div>
+      <div class="container">
+        <div class="block">
+          <div class="main-block">
+            <div class="form-block">
+              <div class="col">
+                <div class="row">
+                  <label class="label">Game's hash</label>
+                </div>
+                <input v-model="game_hash" class="input" type="text" placeholder="Game's hash (SHA256)">
+              </div>
+              <div class="col">
+                <div class="row">
+                  <label class="label">Salt (you can check this block in btc blockchain)</label>
+                </div>
+                <input v-model="server_seed" class="input" type="text" placeholder="Salt">
+              </div>
+            </div>
+            <div class="desc-block">
+              <h3 class="label">How does it work:</h3>
+              <p class="p-tag">In Crash we taking all data from blockchain</p>
+              <div class="sizedBoxHeight"></div>
+              <p class="p-tag">To produce eventual result we taking BTC last block + ETH random tx without first 2 chars</p>
+              <div class="sizedBoxHeight"></div>
+              <p class="p-tag">
+                All of this data you can check here, links are providing for every bet from bitruby.io/games/crash
+              </p>
+            </div>
+          </div>
+          <div class="field is-grouped">
+            <p class="submit-btn">
+              <button class="button is-primary" @click="triggerGameResult()">Verify</button>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="sizedBoxHeight"></div>
+      <div class="container">
+        <div class="block">
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="7"><b>Hash</b></th>
+                <th colspan="7"><b>Bust</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="7">{{ game_hash ? game_hash : 0 }}</td>
+                <td colspan="7">{{ game_result ? game_result : 0 }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script type="module">
+    const query = locationRead.queryString();
+    
+    import { createApp, ref, watch } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js';
+    
+    createApp({
+      data() {
+        return {
+          game_hash: query.game_hash ?? "",
+          game_eth_hash: query.game_eth_hash ?? "",
+          server_seed: query.server_seed ?? "",
+          game_result: "0"
+        }
+      },
+      mounted() {
+        if (this.server_seed, this.game_hash) this.triggerGameResult()
+      },
+      methods: {
+        triggerGameResult() {
+          this.game_result = this.gameResultCount()
+        },
+        gameResultCount() {
+          const salt = this.server_seed;
+          let seed = this.game_hash;
+          const nBits = 52; // number of most significant bits to use
+
+          // 1. HMAC_SHA256(message=seed, key=salt)  
+          if (salt) {
+            const hmac = CryptoJS.HmacSHA256(CryptoJS.enc.Hex.parse(seed), salt);
+            seed = hmac.toString(CryptoJS.enc.Hex);
+          }
+
+          // 2. r = 52 most significant bits
+          seed = seed.slice(0, nBits / 4);
+          const r = parseInt(seed, 16);
+
+          // 3. X = r / 2^52
+          let X = r / Math.pow(2, nBits); // uniformly distributed in [0; 1)
+          X = parseFloat(X.toPrecision(9));
+
+          // 4. X = 99 / (1-X)
+          X = 99 / (1 - X);
+
+          // 5. return max(trunc(X), 100)
+          const result = Math.floor(X);
+          return Math.max(1, result / 100);
+        },
+      },
+    }).mount('#app')
+  </script>
+  <script>
+    window.locationRead = (() => {
+      function queryString() {
+        return window.location.search.replace('?', '')
+          .split('&')
+          .reduce(function (res, item) {
+            let kv = item.split('=');
+            res[kv[0]] = kv[1];
+            return res;
+          }, {})
+      }
+      
+      function sha256 (value) {
+        return CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(value));
+      }
+      return {
+        queryString,
+        sha256,
+      }
+    })();
+  </script>
+</body>
+
+</html>
