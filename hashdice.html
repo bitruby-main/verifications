@@ -331,7 +331,7 @@
             <label class="label">Result</label>
             <h1 class="title">
               {{
-                game_result?.toString()?.slice(-5)
+                gameResult?.toString()?.slice(-5)
               }}
             </h1>
           </div>
@@ -351,7 +351,7 @@
           nonce: query.n ?? "",
           serverSeed: query.ss ?? "",
           serverSeedHmac: "",
-          game_result: "0"
+          gameResult: "0"
         }
       },
       mounted() {
@@ -359,7 +359,7 @@
       },
       methods: {
         triggerGameResult() {
-          this.game_result = this.gameResultCount()
+          this.gameResult = this.gameResultCount()
         },
         gameResultCount () {
           const hash = CryptoJS.HmacSHA512(this.clientSeed + ':' + this.nonce, this.serverSeed);

@@ -272,13 +272,13 @@
                 <div class="row">
                   <label class="label">Game's hash</label>
                 </div>
-                <input v-model="game_hash" class="input" type="text" placeholder="Game's hash (SHA256)">
+                <input v-model="gameHash" class="input" type="text" placeholder="Game's hash (SHA256)">
               </div>
               <div class="col">
                 <div class="row">
                   <label class="label">Salt (you can check this block in btc blockchain)</label>
                 </div>
-                <input v-model="server_seed" class="input" type="text" placeholder="Salt">
+                <input v-model="serverSeed" class="input" type="text" placeholder="Salt">
               </div>
             </div>
             <div class="desc-block">
@@ -311,8 +311,8 @@
             </thead>
             <tbody>
               <tr>
-                <td colspan="7">{{ game_hash ? game_hash : 0 }}</td>
-                <td colspan="7">{{ game_result ? game_result : 0 }}</td>
+                <td colspan="7">{{ gameHash ? gameHash : 0 }}</td>
+                <td colspan="7">{{ gameResult ? gameResult : 0 }}</td>
               </tr>
             </tbody>
           </table>
@@ -328,21 +328,21 @@
     createApp({
       data() {
         return {
-          game_hash: query.gh ?? "",
-          server_seed: query.ss ?? "",
-          game_result: "0"
+          gameHash: query.gh ?? "",
+          serverSeed: query.ss ?? "",
+          gameResult: "0"
         }
       },
       mounted() {
-        if (this.server_seed, this.game_hash) this.triggerGameResult()
+        if (this.serverSeed, this.gameHash) this.triggerGameResult()
       },
       methods: {
         triggerGameResult() {
-          this.game_result = this.gameResultCount()
+          this.gameResult = this.gameResultCount()
         },
         gameResultCount() {
-          const salt = this.server_seed;
-          let seed = this.game_hash;
+          const salt = this.serverSeed;
+          let seed = this.gameHash;
           const nBits = 52; // number of most significant bits to use
 
           // 1. HMAC_SHA256(message=seed, key=salt)  
