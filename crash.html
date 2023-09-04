@@ -328,9 +328,8 @@
     createApp({
       data() {
         return {
-          game_hash: query.game_hash ?? "",
-          game_eth_hash: query.game_eth_hash ?? "",
-          server_seed: query.server_seed ?? "",
+          game_hash: query.gh ?? "",
+          server_seed: query.ss ?? "",
           game_result: "0"
         }
       },

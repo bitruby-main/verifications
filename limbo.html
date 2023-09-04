@@ -344,9 +344,9 @@
     createApp({
       data() {
         return {
-          clientSeed: query.clientSeed ?? "",
-          nonce: query.nonce ?? "",
-          serverSeed: query.serverSeed ?? "",
+          clientSeed: query.cs ?? "",
+          nonce: query.n ?? "",
+          serverSeed: query.ss ?? "",
           serverSeedHmac: "",
           game_result: "0"
         }
@@ -359,7 +359,6 @@
           this.game_result = this.gameResultCount()
         },
         gameResultCount () {
-          console.log(this, 'this')
           const hash = CryptoJS.HmacSHA256(this.clientSeed + ':' + this.nonce, this.serverSeed);
           let seed = String(hash)
           this.serverSeedHmac = seed;

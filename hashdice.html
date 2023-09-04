@@ -347,9 +347,9 @@
     createApp({
       data() {
         return {
-          clientSeed: query.clientSeed ?? "",
-          nonce: query.nonce ?? "",
-          serverSeed: query.serverSeed ?? "",
+          clientSeed: query.cs ?? "",
+          nonce: query.n ?? "",
+          serverSeed: query.ss ?? "",
           serverSeedHmac: "",
           game_result: "0"
         }

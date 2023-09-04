@@ -311,10 +311,7 @@
               <p class="p-tag">
                 All of this data you can check here,
                 links are providing for every bet from
-                <a
-                  href="https://bitruby.io/games/plinko"
-                  target="_blank"
-                >https://bitruby.io/games/plinko</a>
+                bitruby.io/games/plinko
               </p>
             </div>
           </div>
@@ -378,9 +375,9 @@
     createApp({
       data() {
         return {
-          clientSeed: query.clientSeed ?? "",
-          nonce: query.nonce ?? "",
-          serverSeed: query.serverSeed ?? "",
+          clientSeed: query.cs ?? "",
+          nonce: query.n ?? "",
+          serverSeed: query.ss ?? "",
           serverSeedHmac: "",
           gameResults: [],
           lines: query.lines ?? 12,
