@@ -270,22 +270,22 @@
             <div class="form-block">
               <div class="col">
                 <div class="row">
-                  <label class="label">Game's hash</label>
+                  <label class="label">Server seed</label>
                 </div>
-                <input v-model="gameHash" class="input" type="text" placeholder="Game's hash (SHA256)">
+                <input v-model="gameHash" class="input" type="text" placeholder="Server seed (SHA256)">
               </div>
               <div class="col">
                 <div class="row">
-                  <label class="label">Salt (you can check this block in btc blockchain)</label>
+                  <label class="label">Client seed (btc block hash)</label>
                 </div>
                 <input v-model="serverSeed" class="input" type="text" placeholder="Salt">
               </div>
             </div>
             <div class="desc-block">
               <h3 class="label">How does it work:</h3>
-              <p class="p-tag">In Crash we taking all data from blockchain</p>
+              <p class="p-tag">All results are precalculated for nearly next 3 years</p>
               <div class="sizedBoxHeight"></div>
-              <p class="p-tag">To produce eventual result we taking BTC last block + ETH random tx without first 2 chars</p>
+              <p class="p-tag">To produce results, we taking BTC block hash as client-seed and millions of random hex string as server-seed</p>
               <div class="sizedBoxHeight"></div>
               <p class="p-tag">
                 All of this data you can check here, links are providing for every bet from bitruby.io/games/crash

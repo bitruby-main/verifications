@@ -274,7 +274,8 @@
               </div>
               <div class="col">
                 <div class="row">
-                  <label class="label">Server-seed (you can check it in etherscan)</label>
+                  <label class="label">Server-seed</label>
+                  <a class="link" :href="'https://etherscan.io/tx/0x' + serverSeed" target="_blank">Check seed</a>
                 </div>
                 <input v-model="serverSeed" class="input" type="text" placeholder="Server seed">
               </div>

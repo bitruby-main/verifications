@@ -12,3 +12,6 @@
 
 ### PLINKO
 - [plinko](https://bitruby-main.github.io/verifications/plinko)
+
+### MINES
+- [mines](https://bitruby-main.github.io/verifications/mines)
