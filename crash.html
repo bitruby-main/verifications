@@ -278,7 +278,7 @@
                 <div class="row">
                   <label class="label">Client seed (btc block hash)</label>
                 </div>
-                <input v-model="serverSeed" class="input" type="text" placeholder="Salt">
+                <input v-model="clientSeed" class="input" type="text" placeholder="Salt">
               </div>
             </div>
             <div class="desc-block">
@@ -329,7 +329,7 @@
       data() {
         return {
           gameHash: query.gh ?? "",
-          serverSeed: query.ss ?? "",
+          clientSeed: query.cs ?? "",
           gameResult: "0"
         }
       },
@@ -341,30 +341,35 @@
           this.gameResult = this.gameResultCount()
         },
         gameResultCount() {
-          const salt = this.serverSeed;
-          let seed = this.gameHash;
-          const nBits = 52; // number of most significant bits to use
+          const serverSeed = this.gameHash;
+          const clientSeed = this.clientSeed;
 
-          // 1. HMAC_SHA256(message=seed, key=salt)  
-          if (salt) {
-            const hmac = CryptoJS.HmacSHA256(CryptoJS.enc.Hex.parse(seed), salt);
-            seed = hmac.toString(CryptoJS.enc.Hex);
-          }
+          if (!serverSeed || !clientSeed) return 0;
 
-          // 2. r = 52 most significant bits
-          seed = seed.slice(0, nBits / 4);
-          const r = parseInt(seed, 16);
+          function divisible(hash, mod) {
+            // We will read in 4 hex at a time, but the first chunk might be a bit smaller
+            // So ABCDEFGHIJ should be chunked like  AB CDEF GHIJ
+            let val = 0;
 
-          // 3. X = r / 2^52
-          let X = r / Math.pow(2, nBits); // uniformly distributed in [0; 1)
-          X = parseFloat(X.toPrecision(9));
+            const o = hash.length % 4;
+            for (let i = o > 0 ? o - 4 : 0; i < hash.length; i += 4) {
+              val = ((val << 16) + parseInt(hash.substring(i, i + 4), 16)) % mod;
+            }
 
-          // 4. X = 99 / (1-X)
-          X = 99 / (1 - X);
+            return val === 0;
+          };
 
-          // 5. return max(trunc(X), 100)
-          const result = Math.floor(X);
-          return Math.max(1, result / 100);
+          const hash = CryptoJS.HmacSHA256(clientSeed, serverSeed).toString(CryptoJS.enc.Hex);
+
+          /* In 1 of 101 games the game crashes instantly. */
+          if (divisible(hash, 101)) return 1;
+
+          /* Use the most significant 52-bit from the hash
+            to calculate the crash point */
+          const h = parseInt(hash.slice(0, 52 / 4), 16);
+          const e = Math.pow(2, 52);
+
+          return Math.floor((100 * e - h) / (e - h)) / 100;
         },
       },
     }).mount('#app')
