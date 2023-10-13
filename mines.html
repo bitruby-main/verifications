@@ -446,20 +446,14 @@
             return factorial(xum) / (factorial(dum) * factorial(xum - dum));
           }
 
-          const mult = risk === 1 ? 0.99 : 1;
+          const mult = risk === 1 ? 0.99 : 0.85;
           let first = combinationOne(n, d);
           let second = combinationTwo(x, d);
           let result = mult * (first / second);
 
           if (result > 10000) return 10000;
-          if (risk === 2) {
-            result = result * (1 - d / 100 - m / 100);
-          }
 
           result = Math.round(result * 100) / 100;
-          let chance = 99 / result;
-          chance = Math.round(chance * 100000) / 100000;
-
           return result;
         },
       },
