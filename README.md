@@ -17,4 +17,4 @@
 - [mines](https://bitruby-main.github.io/verifications/mines)
 
 ### LOTTERY
-- [mines](https://bitruby-main.github.io/verifications/lottery)
+- [lottery](https://bitruby-main.github.io/verifications/lottery)
