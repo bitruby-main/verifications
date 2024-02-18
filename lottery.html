@@ -342,7 +342,7 @@ First, use HMAC_SHA256 to calculate the hash value, which gives us a 64-bit char
       },
       methods: {
         triggerGameResult() {
-          this.gameResult = this.lotteryResult(this.serverSeed, this.clientSeed)
+          this.gameResult = this.lotteryResult(this.clientSeed, this.serverSeed)
         },
         getRandomByHash(hash) {
           if (!hash) return 0;
