@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>HashDice - Game Verification code</title>
+  <title>Lottery - Game Verification code</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
@@ -175,7 +175,7 @@
     display: flex;
     justify-content: space-between;
   }
-
+  
   .button {
     padding: 12px 20px;
     border-radius: 8px;
@@ -190,6 +190,7 @@
   .button:active {
     transform: scale(0.95)
   }
+
   .button:hover {
     opacity: .8;
   }
@@ -197,6 +198,7 @@
   .submit-btn {
     display: flex;
     justify-content: flex-end;
+    margin-top: 20px;
   }
 
   .sizedBoxHeight {
@@ -261,44 +263,37 @@
   <div id="app">
     <section class="section">
       <div class="container">
-        <h1 class="title">HashDice verification</h1>
+        <h1 class="title">Lottery - Game Verification</h1>
       </div>
       <div class="container">
         <div class="block">
           <div class="main-block">
             <div class="form-block">
               <div class="col">
-                <label class="label">Client-seed</label>
-                <input v-model="clientSeed" class="input" type="text" placeholder="Client seed">
+                <div class="row">
+                  <label class="label">Server seed (eth block hash)</label>
+                </div>
+                <input v-model="serverSeed" class="input" type="text" placeholder="Server seed (SHA256)">
               </div>
               <div class="col">
                 <div class="row">
-                  <label class="label">Server-seed</label>
-                  <a class="link" :href="'https://etherscan.io/tx/0x' + serverSeed" target="_blank">Check seed</a>
+                  <label class="label">Client seed (eth block hash)</label>
                 </div>
-                <input v-model="serverSeed" class="input" type="text" placeholder="Server seed">
-              </div>
-              <div class="col">
-                <label class="label">Nonce</label>
-                <input v-model="nonce" class="input" type="text" placeholder="Nonce">
+                <input v-model="clientSeed" class="input" type="text" placeholder="Salt">
               </div>
             </div>
+            <!-- Lottery is drawn in 5+1 balls rule, with five regular balls taken from 36 numbers and a jackpot ball taken from 10 numbers.
+Server seed: Each game generates a new server seed and publishes the string after Hash256. Client Seeds: Get the ETH height at the end of the daily ticket purchase deadline, and use Hash after 10 blocks as the client seed.
+First, use HMAC_SHA256 to calculate the hash value, which gives us a 64-bit character hex string: -->
             <div class="desc-block">
               <h3 class="label">How does it work:</h3>
-              <p class="p-tag">
-                For HashDice we taking randomly created client-seed by user
-              </p>
+              <p class="p-tag">Firstly, we taking 2 hashes from etherscan (client, server) and mixing them via Lottery algorithm</p>
               <div class="sizedBoxHeight"></div>
               <p class="p-tag">
-                Server seed is hidden at first, but its taking randomly from blockchain,
-                which you can check in link from left
+                Secondly, we mixing seeds via HmacSHA256, and taking every 8 chars of hash, converting them to number, and getting results
               </p>
               <div class="sizedBoxHeight"></div>
-              <p class="p-tag">
-                All of this data you can check here,
-                links are providing for every bet from
-                bitruby.io/games/hashdice
-              </p>
+              <p class="p-tag">Eventually, algorithm produce 5 balls (based on 36 numbers) + 1 jackpot ball (based on 10 numbers)</p>
             </div>
           </div>
           <div class="field is-grouped">
@@ -309,33 +304,22 @@
         </div>
       </div>
       <div class="sizedBoxHeight"></div>
-      <div class="sizedBoxHeight"></div>
-      <div class="container">
-        <h1 class="title">Hash results</h1>
-      </div>
       <div class="container">
         <div class="block">
-          <div class="col">
-            <label class="label">hmacSha512(ClientSeed:nonce, serverSeed)</label>
-            <input v-model="serverSeedHmac" class="input" type="text" placeholder="Server seed">
-          </div>
-        </div>
-      </div>
-      <div class="sizedBoxHeight"></div>
-      <div class="sizedBoxHeight"></div>
-      <div class="container">
-        <h1 class="title">Final result</h1>
-      </div>
-      <div class="container">
-        <div class="block">
-          <div class="row">
-            <label class="label">Result</label>
-            <h1 class="title">
-              {{
-                gameResult?.toString()?.slice(-5)
-              }}
-            </h1>
-          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="7"><b>First 5 numbers</b></th>
+                <th colspan="7"><b>Jackpot number</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="7">{{ gameResult }}</td>
+                <td colspan="7">{{ gameResult[gameResult.length - 1] }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -348,46 +332,52 @@
     createApp({
       data() {
         return {
-          clientSeed: query.cs ?? "",
-          nonce: query.n ?? "",
           serverSeed: query.ss ?? "",
-          serverSeedHmac: "",
-          gameResult: "0"
+          clientSeed: query.cs ?? "",
+          gameResult: []
         }
       },
       mounted() {
-        if (this.clientSeed && this.nonce && this.serverSeed) this.triggerGameResult()
+        if (this.serverSeed && this.clientSeed) this.triggerGameResult()
       },
       methods: {
         triggerGameResult() {
-          this.gameResult = this.gameResultCount()
+          this.gameResult = this.lotteryResult(this.serverSeed, this.clientSeed)
         },
-        gameResultCount () {
-          const hash = CryptoJS.HmacSHA512(this.clientSeed + ':' + this.nonce, this.serverSeed);
-          const stringHash = String(hash);
-          this.serverSeedHmac = stringHash;
+        getRandomByHash(hash) {
+          if (!hash) return 0;
+          return hash
+            .match(/.{2}/g)
+            .map((_) => parseInt(_, 16))
+            .reduce(
+              (res, it, i) => res + it / 256 ** (i + 1),
+              0
+            );
+        },
+        getBalls(hash) {
+          if (!hash) return;
 
-          let index = 0;
-          let lucky = 0;
-          do {
-            // eslint-disable-next-line no-var
-            lucky = parseInt(stringHash.substr(index, 5), 16);
-            index += 5;
-          } while (lucky >= 1000000);
-          lucky % 100000;
+          const remainingBalls = Array(36)
+            .fill(null)
+            .map((v, i) => i + 1);
 
-          const list = stringHash;
-          const res = {
-            dec: [],
-            hex: []
-          };
-          for (let i = 0; i < list.length; i += 2) {
-            const dext = list[i] + list[i + 1];
-            const hext = parseInt(dext, 16);
-            res.dec.push(dext);
-            res.hex.push(hext);
+          const balls = [];
+
+          for (let i = 0; i < 5; i++) {
+            const random = this.getRandomByHash(hash.substr(i * 8, 8));
+            if (!random) return;
+            const ballIndex = Math.floor(random * remainingBalls.length);
+
+            balls.push(remainingBalls.splice(ballIndex, 1)[0]);
           }
-          return lucky;
+
+          const jackpot = Math.floor(this.getRandomByHash(hash.substr(5 * 8, 8)) * 10) + 1;
+          return balls.concat(jackpot);
+        },
+        lotteryResult(client, server) {
+          const hmac = CryptoJS.HmacSHA256(client, server);
+          const result = this.getBalls(hmac.toString());
+          return result;
         },
       },
     }).mount('#app')
