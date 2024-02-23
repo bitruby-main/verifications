@@ -274,10 +274,16 @@
               </div>
               <div class="col">
                 <div class="row">
-                  <label class="label">Server-seed</label>
+                  <label class="label">Server-seed (unhashed)</label>
                   <a class="link" :href="'https://etherscan.io/tx/0x' + serverSeed" target="_blank">Check seed</a>
                 </div>
                 <input v-model="serverSeed" class="input" type="text" placeholder="Server seed">
+              </div>
+              <div class="col">
+                <div class="row">
+                  <label class="label">Server-seed (hashed)</label>
+                </div>
+                <input v-model="hashedServerSeed" class="input" type="text" placeholder="Hashed seed">
               </div>
               <div class="col">
                 <label class="label">Nonce</label>
@@ -355,6 +361,12 @@
       mounted() {
         if (this.clientSeed && this.nonce && this.serverSeed) this.triggerGameResult()
       },
+      computed: {
+        hashedServerSeed() {
+          if (!this.serverSeed) return "0";
+          return CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(`0x${this.serverSeed}`)).toString();
+        }
+      },
       methods: {
         triggerGameResult() {
           this.gameResult = this.gameResultCount()
@@ -387,12 +399,8 @@
           }, {})
       }
       
-      function sha256 (value) {
-        return CryptoJS.SHA256(CryptoJS.enc.Utf8.parse(value));
-      }
       return {
         queryString,
-        sha256,
       }
     })();
   </script>
