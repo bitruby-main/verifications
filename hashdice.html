@@ -378,28 +378,14 @@
           const hash = CryptoJS.HmacSHA512(this.clientSeed + ':' + this.nonce, this.serverSeed);
           const stringHash = String(hash);
           this.serverSeedHmac = stringHash;
-
+          
           let index = 0;
-          let lucky = 0;
           do {
             // eslint-disable-next-line no-var
-            lucky = parseInt(stringHash.substr(index, 5), 16);
+            var lucky = parseInt(resultHashList.substr(index, 5), 16);
             index += 5;
           } while (lucky >= 1000000);
-          lucky % 100000;
-
-          const list = stringHash;
-          const res = {
-            dec: [],
-            hex: []
-          };
-          for (let i = 0; i < list.length; i += 2) {
-            const dext = list[i] + list[i + 1];
-            const hext = parseInt(dext, 16);
-            res.dec.push(dext);
-            res.hex.push(hext);
-          }
-          return lucky;
+          return lucky % 100000;
         },
       },
     }).mount('#app')
