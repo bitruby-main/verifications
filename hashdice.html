@@ -382,7 +382,7 @@
           let index = 0;
           do {
             // eslint-disable-next-line no-var
-            var lucky = parseInt(resultHashList.substr(index, 5), 16);
+            var lucky = parseInt(stringHash.substr(index, 5), 16);
             index += 5;
           } while (lucky >= 1000000);
           return lucky % 100000;
