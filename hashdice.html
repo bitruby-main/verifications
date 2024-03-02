@@ -358,6 +358,7 @@
           nonce: query.n ?? "",
           serverSeed: query.ss ?? "",
           serverSeedHmac: "",
+          isHighActive: query.ish ?? false,
           gameResult: "0"
         }
       },
@@ -380,12 +381,14 @@
           this.serverSeedHmac = stringHash;
           
           let index = 0;
+          const divNum = this.isHighActive ? 98000 : 108000;
+
           do {
             // eslint-disable-next-line no-var
             var lucky = parseInt(stringHash.substr(index, 5), 16);
             index += 5;
           } while (lucky >= 1000000);
-          return lucky % 100000;
+          return lucky % divNum;
         },
       },
     }).mount('#app')
