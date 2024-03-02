@@ -381,7 +381,9 @@
           this.serverSeedHmac = stringHash;
           
           let index = 0;
-          const divNum = this.isHighActive ? 98000 : 108000;
+          let divNum = 108000;
+
+          if (this.isHighActive === "true") divNum = 98000;
 
           do {
             // eslint-disable-next-line no-var
